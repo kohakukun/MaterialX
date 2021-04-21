@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<materialx version="1.38" colorspace="lin_rec709" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <adsk:layered name="shader_Prism_001" type="surfaceshader">
+    <input name="surface_albedo" type="color3" colorspace="gamma24" value="1, 1, 1" />
+    <input name="surface_roughness" type="float" value="0.0774597" />
+    <input name="surface_anisotropy" type="float" value="0" />
+    <input name="surface_rotation" type="float" value="0" />
+    <input name="layered_f0" type="float" value="0.0602702" />
+    <input name="layered_fraction" type="float" value="0.15" />
+    <input name="layered_fraction_invert" type="boolean" value="true" />
+    <input name="layered_bottom_f0" type="color3" output="layered_bottom_f0_map_output" nodegraph="Prism_001_inputGraph" />
+    <input name="layered_diffuse" type="color3" colorspace="gamma24" value="0.0998528, 0.0998528, 0.0998528" />
+    <input name="layered_normal" type="vector3" output="layered_normal_map_output" nodegraph="Prism_001_inputGraph" />
+    <input name="layered_roughness" type="float" value="0.447214" />
+    <input name="layered_anisotropy" type="float" value="0.95" />
+    <input name="layered_rotation" type="float" output="layered_rotation_map_output" nodegraph="Prism_001_inputGraph" />
+  </adsk:layered>
+  <surfacematerial name="Prism_001" type="material" uiname="Carbon Fiber - Plain">
+    <input name="surfaceshader" type="surfaceshader" nodename="shader_Prism_001" />
+  </surfacematerial>
+  <nodegraph name="Prism_001_inputGraph">
+    <adsk:bitmap name="layered_bottom_f0_texture" type="color3">
+      <input name="file" type="filename" value="carbon_fiber_plain_spec.png" colorspace="srgb_texture" />
+      <input name="realworld_scale" type="vector2" value="0.33, 0.33" unit="inch" unittype="distance" />
+    </adsk:bitmap>
+    <output name="layered_bottom_f0_map_output" type="color3" nodename="layered_bottom_f0_texture" />
+    <adsk:normal_map name="layered_normal_texture" type="vector3">
+      <input name="file" type="filename" value="carbon_fiber_plain_norm.png" colorspace="lin_rec709" />
+      <input name="realworld_scale" type="vector2" value="0.33, 0.33" unit="inch" unittype="distance" />
+    </adsk:normal_map>
+    <output name="layered_normal_map_output" type="vector3" nodename="layered_normal_texture" />
+    <adsk:bitmap_remap name="layered_rotation_texture" type="float">
+      <input name="file" type="filename" value="carbon_fiber_plain_anisdir.png" colorspace="lin_rec709" />
+      <input name="realworld_scale" type="vector2" value="0.33, 0.33" unit="inch" unittype="distance" />
+      <input name="outlow" type="float" value="0" />
+      <input name="outhigh" type="float" value="180" />
+    </adsk:bitmap_remap>
+    <output name="layered_rotation_map_output" type="float" nodename="layered_rotation_texture" />
+  </nodegraph>
+</materialx>

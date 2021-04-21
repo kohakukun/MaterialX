@@ -207,6 +207,15 @@ TEST_CASE("Flatten", "[nodegraph]")
         }
     }
     REQUIRE(totalNodeCount == 16);
+
+    // Read the example with upstream nodegraph
+    doc = mx::createDocument();
+    const mx::FilePathVec libraryFolders;
+    mx::FileSearchPath libraryRoot(mx::FilePath::getCurrentPath() / mx::FilePath("libraries"));
+    mx::loadLibraries(libraryFolders, libraryRoot, doc);
+    mx::readFromXmlFile(doc, "preflat.mtlx", searchPath);
+    doc->flattenSubgraphs();
+    mx::writeToXmlFile(doc, "flattened.mtlx");
 }
 
 TEST_CASE("Topological sort", "[nodegraph]")

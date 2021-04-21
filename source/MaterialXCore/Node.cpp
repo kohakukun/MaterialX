@@ -310,6 +310,10 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                             {
                                 newInput->setOutputString(refInput->getOutputString());
                             }
+                            if (refInput->hasNodeGraphString())
+                            {
+                                newInput->setNodeGraphString(refInput->getNodeGraphString());
+                            }
                         }
                     }
                     destValue->removeAttribute(ValueElement::INTERFACE_NAME_ATTRIBUTE);
