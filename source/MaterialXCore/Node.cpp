@@ -10,6 +10,8 @@
 
 #include <deque>
 
+#include <iostream>
+
 namespace MaterialX
 {
 
@@ -227,6 +229,8 @@ NodePtr GraphElement::addMaterialNode(const string& name, ConstNodePtr shaderNod
 
 void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
 {
+    //std::unordered_map<string, string> renamedNodes;
+
     vector<NodePtr> processNodeVec = getNodes();
     while (!processNodeVec.empty())
     {
@@ -266,12 +270,18 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             }
 
             NodeGraphPtr sourceSubGraph = pair.second;
+            std::cout << "--- Process nodegraph: " + sourceSubGraph->getNamePath() << std::endl;
+            std::unordered_map<string, string> renamedNodes;
             std::unordered_map<NodePtr, NodePtr> subNodeMap;
-
-            // Create a new instance of each original subnode.
             for (NodePtr sourceSubNode : sourceSubGraph->getNodes())
             {
-                string destName = createValidChildName(sourceSubGraph->getName() + "_" + sourceSubNode->getName());
+                string origName = sourceSubNode->getName();
+                string destName = createValidChildName(origName);
+                if (origName != destName)
+                {
+                    std::cout << "Add mapping: [" + origName + "] = " + destName << std::endl;
+                    renamedNodes[origName] = destName;
+                }
                 NodePtr destSubNode = addNode(sourceSubNode->getCategory(), destName);
                 destSubNode->copyContentFrom(sourceSubNode);
                 setChildIndex(destSubNode->getName(), getChildIndex(processNode->getName()));
@@ -304,6 +314,8 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                             InputPtr newInput = destValue->asA<Input>();
                             if (refInput->hasNodeName())
                             {
+                                // Set the current node name. If any node got renamed
+                                // that is handled later on.
                                 newInput->setNodeName(refInput->getNodeName());
                             }
                             if (refInput->hasOutputString())
@@ -346,6 +358,23 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                         for (PortElementPtr processNodePort : downstreamPortMap[processNode])
                         {
                             processNodePort->setConnectedNode(destSubNode);
+                        }
+                    }
+                }
+            }
+        
+            for (NodePtr renameNode : getNodes())
+            {
+                for (InputPtr renameInput : renameNode->getChildrenOfType<Input>())
+                {
+                    if (renameInput->hasNodeName())
+                    {
+                        const string& origName = renameInput->getNodeName();
+                        string renameName = renamedNodes[origName];
+                        if (!renameName.empty())
+                        {
+                            std::cout << "---> Map: [" + origName + "] = " + renameName << std::endl;
+                            renameInput->setNodeName(renameName);
                         }
                     }
                 }
