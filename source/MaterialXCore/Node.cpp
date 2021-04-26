@@ -282,7 +282,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             NodeGraphPtr sourceSubGraph = pair.second;
             std::cout << "--- Process nodegraph: " + sourceSubGraph->getNamePath() << std::endl;
             std::unordered_map<NodePtr, NodePtr> subNodeMap;
-            std::unordered_map<OutputPtr, OutputPtr> subOutputMap;
          
             for (NodePtr sourceSubNode : sourceSubGraph->getNodes())
             {
@@ -377,31 +376,13 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                 }
             }
 
-#if 0
-            // Add subgraph outputs
-            for (OutputPtr sourceOutput : sourceSubGraph->getOutputs())
-            {
-                string origName = sourceOutput->getName();
-                string destName = createValidChildName(origName);
-                OutputPtr destOutput = addOutput(destName);
-
-                std::cout << "Convert output : [" + origName + "] to " + destName << std::endl;
-                destOutput->copyContentFrom(sourceOutput);
-                setChildIndex(destOutput->getName(), getChildIndex(processNode->getName()));
-                subOutputMap[sourceOutput] = destOutput;
-            }
-#endif
-#if 1
-
             // Check for any nodegraph outputs pointing to a flatten node
-            //<output name="layered_bottom_f0_map_output" type="color3" nodename="layered_bottom_f0_texture" />
-            // change output to point to subOutput source.
             if (sourceSubGraph->getOutputCount())
             {
                 for (OutputPtr sourceOutput : getOutputs())
                 {
-                    const string& nodeNameString = sourceOutput->getNodeName(); // layered_bottom_f0_texture
-                    const string& outputString = sourceOutput->getOutputString(); // empty or a specific output
+                    const string& nodeNameString = sourceOutput->getNodeName(); 
+                    const string& outputString = sourceOutput->getOutputString(); 
 
                     if (nodeNameString != processNode->getName())
                     {
@@ -420,12 +401,18 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                     {
                         destName = sourceSubGraphOutput->getNodeGraphString();
                     }
+                    NodePtr sourceSubNode = sourceSubGraph->getNode(destName);
+                    NodePtr destNode = sourceSubNode ? subNodeMap[sourceSubNode] : nullptr;
+                    if (destNode)
+                    {
+                        destName = destNode->getName();
+                    }
 
                     // Point original output to this one
                     sourceOutput->setNodeName(destName);
                 }
             }
-#endif
+
             // The processed node has been replaced, so remove it from the graph.
             removeNode(processNode->getName());
         }

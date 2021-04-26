@@ -147,7 +147,7 @@ TEST_CASE("Flatten", "[nodegraph]")
     // Read the example file.
     mx::DocumentPtr doc = mx::createDocument();
     mx::readFromXmlFile(doc, "SubGraphs.mtlx", searchPath);
-#if 0
+
     // Find the example graph.
     mx::NodeGraphPtr graph = doc->getNodeGraph("subgraph_ex1");
     REQUIRE(graph);
@@ -207,7 +207,7 @@ TEST_CASE("Flatten", "[nodegraph]")
         }
     }
     REQUIRE(totalNodeCount == 16);
-#endif
+
     // Read the example with upstream nodegraph
     doc = mx::createDocument();
     const mx::FilePathVec libraryFolders;
