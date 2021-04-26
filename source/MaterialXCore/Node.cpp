@@ -229,8 +229,6 @@ NodePtr GraphElement::addMaterialNode(const string& name, ConstNodePtr shaderNod
 
 void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
 {
-    //std::unordered_map<string, string> renamedNodes;
-
     vector<NodePtr> processNodeVec = getNodes();
     while (!processNodeVec.empty())
     {
@@ -247,10 +245,22 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             }
             NodeGraphPtr subNodeGraph = implement->asA<NodeGraph>();
             graphImplMap[cacheNode] = subNodeGraph;
-            downstreamPortMap[cacheNode] = cacheNode->getDownstreamPorts();
+            PortElementVec cdownstreamports = cacheNode->getDownstreamPorts();
+            downstreamPortMap[cacheNode] = cdownstreamports;
+            for (auto portElem : cdownstreamports)
+            {
+                std::cout << "Cache node [" + cacheNode->getNamePath() << "]. Add port: "
+                    << portElem->getNamePath() << std::endl;
+            }
             for (NodePtr subNode : subNodeGraph->getNodes())
             {
-                downstreamPortMap[subNode] = subNode->getDownstreamPorts();
+                PortElementVec downstreamports = subNode->getDownstreamPorts();
+                for (auto portElem2 : downstreamports)
+                {
+                    std::cout << "Cache submode node [" + subNode->getNamePath() << "]. Add port: "
+                        << portElem2->getNamePath() << std::endl;
+                }
+                downstreamPortMap[subNode] = downstreamports;
             }
         }
         processNodeVec.clear();
@@ -271,18 +281,16 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
 
             NodeGraphPtr sourceSubGraph = pair.second;
             std::cout << "--- Process nodegraph: " + sourceSubGraph->getNamePath() << std::endl;
-            std::unordered_map<string, string> renamedNodes;
             std::unordered_map<NodePtr, NodePtr> subNodeMap;
+            std::unordered_map<OutputPtr, OutputPtr> subOutputMap;
+         
             for (NodePtr sourceSubNode : sourceSubGraph->getNodes())
             {
                 string origName = sourceSubNode->getName();
                 string destName = createValidChildName(origName);
-                if (origName != destName)
-                {
-                    std::cout << "Add mapping: [" + origName + "] = " + destName << std::endl;
-                    renamedNodes[origName] = destName;
-                }
                 NodePtr destSubNode = addNode(sourceSubNode->getCategory(), destName);
+
+                std::cout << "Convert node : [" + origName + "] to " + destName << std::endl;
                 destSubNode->copyContentFrom(sourceSubNode);
                 setChildIndex(destSubNode->getName(), getChildIndex(processNode->getName()));
 
@@ -314,8 +322,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                             InputPtr newInput = destValue->asA<Input>();
                             if (refInput->hasNodeName())
                             {
-                                // Set the current node name. If any node got renamed
-                                // that is handled later on.
                                 newInput->setNodeName(refInput->getNodeName());
                             }
                             if (refInput->hasOutputString())
@@ -343,6 +349,8 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             {
                 NodePtr sourceSubNode = subNodePair.first;
                 NodePtr destSubNode = subNodePair.second;
+                std::cout << "Map connections from : " << sourceSubNode->getNamePath() <<
+                    " to: " << destSubNode->getNamePath() << std::endl;
                 for (PortElementPtr sourcePort : downstreamPortMap[sourceSubNode])
                 {
                     if (sourcePort->isA<Input>())
@@ -350,6 +358,9 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                         auto it = subNodeMap.find(sourcePort->getParent()->asA<Node>());
                         if (it != subNodeMap.end())
                         {
+                            std::cout << "-- IN Connect " << it->second->getNamePath() << " port: "
+                                << sourcePort->getName() << " to: " << destSubNode->getNamePath()
+                                << std::endl;
                             it->second->setConnectedNode(sourcePort->getName(), destSubNode);
                         }
                     }
@@ -357,29 +368,64 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                     {
                         for (PortElementPtr processNodePort : downstreamPortMap[processNode])
                         {
+                            std::cout << "-- OUT Connect " << processNodePort->getNamePath() << " port: "
+                                << sourcePort->getName() << " to: " << destSubNode->getNamePath()
+                                << std::endl;
                             processNodePort->setConnectedNode(destSubNode);
                         }
                     }
                 }
             }
-        
-            for (NodePtr renameNode : getNodes())
+
+#if 0
+            // Add subgraph outputs
+            for (OutputPtr sourceOutput : sourceSubGraph->getOutputs())
             {
-                for (InputPtr renameInput : renameNode->getChildrenOfType<Input>())
+                string origName = sourceOutput->getName();
+                string destName = createValidChildName(origName);
+                OutputPtr destOutput = addOutput(destName);
+
+                std::cout << "Convert output : [" + origName + "] to " + destName << std::endl;
+                destOutput->copyContentFrom(sourceOutput);
+                setChildIndex(destOutput->getName(), getChildIndex(processNode->getName()));
+                subOutputMap[sourceOutput] = destOutput;
+            }
+#endif
+#if 1
+
+            // Check for any nodegraph outputs pointing to a flatten node
+            //<output name="layered_bottom_f0_map_output" type="color3" nodename="layered_bottom_f0_texture" />
+            // change output to point to subOutput source.
+            if (sourceSubGraph->getOutputCount())
+            {
+                for (OutputPtr sourceOutput : getOutputs())
                 {
-                    if (renameInput->hasNodeName())
+                    const string& nodeNameString = sourceOutput->getNodeName(); // layered_bottom_f0_texture
+                    const string& outputString = sourceOutput->getOutputString(); // empty or a specific output
+
+                    if (nodeNameString != processNode->getName())
                     {
-                        const string& origName = renameInput->getNodeName();
-                        string renameName = renamedNodes[origName];
-                        if (!renameName.empty())
-                        {
-                            std::cout << "---> Map: [" + origName + "] = " + renameName << std::endl;
-                            renameInput->setNodeName(renameName);
-                        }
+                        continue;
                     }
+
+                    // Look for what the original output pointed to.
+                    OutputPtr sourceSubGraphOutput = outputString.empty() ? sourceSubGraph->getOutputs()[0] : sourceSubGraph->getOutput(outputString);
+                    if (!sourceSubGraphOutput)
+                    {
+                        continue;
+                    }
+
+                    string destName = sourceSubGraphOutput->getNodeName();
+                    if (destName.empty())
+                    {
+                        destName = sourceSubGraphOutput->getNodeGraphString();
+                    }
+
+                    // Point original output to this one
+                    sourceOutput->setNodeName(destName);
                 }
             }
-
+#endif
             // The processed node has been replaced, so remove it from the graph.
             removeNode(processNode->getName());
         }
