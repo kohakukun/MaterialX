@@ -34,12 +34,16 @@ const string VALID_SEPARATORS = "/\\";
 const char PREFERRED_SEPARATOR_WINDOWS = '\\';
 const char PREFERRED_SEPARATOR_POSIX = '/';
 
+FileSearchPath CORE_DEFINITION_PATH = "";
+
 #if defined(_WIN32)
 const string PATH_LIST_SEPARATOR = ";";
 #else
 const string PATH_LIST_SEPARATOR = ":";
 #endif
 const string MATERIALX_SEARCH_PATH_ENV_VAR = "MATERIALX_SEARCH_PATH";
+const string MATERIALX_ASSET_DEFINITION_PATH_ENV_VAR = "MATERIALX_ASSET_DEFINITION_PATH";
+const string MATERIALX_ASSET_TEXTURE_PATH_ENV_VAR = "MATERIALX_ASSET_TEXTURE_PATH";
 
 inline bool hasWindowsDriveSpecifier(const string& val)
 {
@@ -339,6 +343,43 @@ FileSearchPath getEnvironmentPath(const string& sep)
 {
     string searchPathEnv = getEnviron(MATERIALX_SEARCH_PATH_ENV_VAR);
     return FileSearchPath(searchPathEnv, sep);
+}
+
+FileSearchPath getAssetDefinitionPath(const string& sep)
+{
+    string assetDefinitionPathEnv = getEnviron(MATERIALX_ASSET_DEFINITION_PATH_ENV_VAR);
+    return FileSearchPath(assetDefinitionPathEnv, sep);
+}
+
+FileSearchPath getAssetTexturePath(const string& sep)
+{
+    string assetTexturePathEnv = getEnviron(MATERIALX_ASSET_TEXTURE_PATH_ENV_VAR);
+    return FileSearchPath(assetTexturePathEnv, sep);
+}
+
+FileSearchPath getCoreDefinitionPath()
+{
+    return CORE_DEFINITION_PATH;
+}
+
+void setEnvironmentPath(FileSearchPath& path)
+{
+    setEnviron(MATERIALX_SEARCH_PATH_ENV_VAR, path.asString());
+}
+
+void setAssetDefinitionPath(FileSearchPath& path)
+{
+    setEnviron(MATERIALX_ASSET_DEFINITION_PATH_ENV_VAR, path.asString());
+}
+
+void setAssetTexturePath(FileSearchPath& path)
+{
+    setEnviron(MATERIALX_ASSET_TEXTURE_PATH_ENV_VAR, path.asString());
+}
+
+void setCoreDefinitionPath(FileSearchPath& path)
+{
+    CORE_DEFINITION_PATH = path;
 }
 
 } // namespace MaterialX

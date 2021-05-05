@@ -342,6 +342,13 @@ class FileSearchPath
 
 /// Return a FileSearchPath object from search path environment variable.
 FileSearchPath getEnvironmentPath(const string& sep = PATH_LIST_SEPARATOR);
+FileSearchPath getAssetDefinitionPath(const string& sep = PATH_LIST_SEPARATOR);
+FileSearchPath getAssetTexturePath(const string& sep = PATH_LIST_SEPARATOR);
+FileSearchPath getCoreDefinitionPath();
+void setEnvironmentPath(FileSearchPath& path);
+void setAssetDefinitionPath(FileSearchPath& path);
+void setAssetTexturePath(FileSearchPath& path);
+void setCoreDefinitionPath(FileSearchPath& path);
 
 } // namespace MaterialX
 
