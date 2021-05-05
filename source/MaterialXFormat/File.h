@@ -9,6 +9,8 @@
 /// @file
 /// Cross-platform support for file and search paths
 
+#include <MaterialXFormat/Export.h>
+
 #include <MaterialXCore/Util.h>
 
 namespace MaterialX
@@ -17,12 +19,12 @@ namespace MaterialX
 class FilePath;
 using FilePathVec = vector<FilePath>;
 
-extern const string PATH_LIST_SEPARATOR;
-extern const string MATERIALX_SEARCH_PATH_ENV_VAR;
+extern MX_FORMAT_API const string PATH_LIST_SEPARATOR;
+extern MX_FORMAT_API const string MATERIALX_SEARCH_PATH_ENV_VAR;
 
 /// @class FilePath
 /// A generic file path, supporting both syntactic and file system operations.
-class FilePath
+class MX_FORMAT_API FilePath
 {
   public:
     enum Type
@@ -207,7 +209,7 @@ class FilePath
 /// @class FileSearchPath
 /// A sequence of file paths, which may be queried to find the first instance
 /// of a given filename on the file system.
-class FileSearchPath
+class MX_FORMAT_API FileSearchPath
 {
   public:
     using Iterator = FilePathVec::iterator;
@@ -340,15 +342,14 @@ class FileSearchPath
     FilePathVec _paths;
 };
 
-/// Return a FileSearchPath object from search path environment variable.
-FileSearchPath getEnvironmentPath(const string& sep = PATH_LIST_SEPARATOR);
-FileSearchPath getAssetDefinitionPath(const string& sep = PATH_LIST_SEPARATOR);
-FileSearchPath getAssetTexturePath(const string& sep = PATH_LIST_SEPARATOR);
-FileSearchPath getCoreDefinitionPath();
-void setEnvironmentPath(FileSearchPath& path);
-void setAssetDefinitionPath(FileSearchPath& path);
-void setAssetTexturePath(FileSearchPath& path);
-void setCoreDefinitionPath(FileSearchPath& path);
+MX_FORMAT_API FileSearchPath getEnvironmentPath(const string& sep = PATH_LIST_SEPARATOR);
+MX_FORMAT_API FileSearchPath getAssetDefinitionPath(const string& sep = PATH_LIST_SEPARATOR);
+MX_FORMAT_API FileSearchPath getAssetTexturePath(const string& sep = PATH_LIST_SEPARATOR);
+MX_FORMAT_API FileSearchPath getCoreDefinitionPath();
+MX_FORMAT_API void setEnvironmentPath(FileSearchPath& path);
+MX_FORMAT_API void setAssetDefinitionPath(FileSearchPath& path);
+MX_FORMAT_API void setAssetTexturePath(FileSearchPath& path);
+MX_FORMAT_API void setCoreDefinitionPath(FileSearchPath& path);
 
 } // namespace MaterialX
 
