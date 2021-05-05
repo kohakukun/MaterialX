@@ -357,8 +357,8 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                         auto it = subNodeMap.find(sourcePort->getParent()->asA<Node>());
                         if (it != subNodeMap.end())
                         {
-                            std::cout << "-- IN Connect " << it->second->getNamePath() << " port: "
-                                << sourcePort->getName() << " to: " << destSubNode->getNamePath()
+                            std::cout << "-- IN Connect " << it->second->getNamePath() << " port: \""
+                                << sourcePort->getName() << "\" to: \"" << destSubNode->getNamePath() << "\""
                                 << std::endl;
                             it->second->setConnectedNode(sourcePort->getName(), destSubNode);
                         }
@@ -367,8 +367,8 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                     {
                         for (PortElementPtr processNodePort : downstreamPortMap[processNode])
                         {
-                            std::cout << "-- OUT Connect " << processNodePort->getNamePath() << " port: "
-                                << sourcePort->getName() << " to: " << destSubNode->getNamePath()
+                            std::cout << "-- OUT Connect \"" << processNodePort->getNamePath() << "\" port: "
+                                << sourcePort->getName() << " to: \"" << destSubNode->getNamePath() << "\""
                                 << std::endl;
                             processNodePort->setConnectedNode(destSubNode);
                         }
@@ -376,7 +376,9 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                 }
             }
 
-            // Check for any nodegraph outputs pointing to a flatten node
+            // Connect any nodegraph outputs within the graph which point to another 
+            // flatten node within the nodegraph. As it's been flattend the previous
+            // reference is incorrect and needs to be updated.
             if (sourceSubGraph->getOutputCount())
             {
                 for (OutputPtr sourceOutput : getOutputs())
@@ -411,6 +413,38 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                     // Point original output to this one
                     sourceOutput->setNodeName(destName);
                 }
+            }
+
+            // If the node was flattened then any downstream references
+            // need to be updated to point to the new root of the flatten node.
+            PortElementVec downstreamPorts = downstreamPortMap[processNode];
+            for (auto downstreamPort : downstreamPorts)
+            {
+                const string& outputString = downstreamPort->getOutputString();
+
+                // Look for an output on the flattened graph
+                OutputPtr sourceSubGraphOutput = outputString.empty() ? sourceSubGraph->getOutputs()[0] : sourceSubGraph->getOutput(outputString);
+                if (!sourceSubGraphOutput)
+                {
+                    continue;
+                }
+
+                // Find connected node to the output
+                string destName = sourceSubGraphOutput->getNodeName();
+                if (destName.empty())
+                {
+                    destName = sourceSubGraphOutput->getNodeGraphString();
+                }
+                NodePtr sourceSubNode = sourceSubGraph->getNode(destName);
+                NodePtr destNode = sourceSubNode ? subNodeMap[sourceSubNode] : nullptr;
+                if (destNode)
+                {
+                    destName = destNode->getName();
+                }
+
+                // Use that node to overwrite downstream port connection
+                downstreamPort->setNodeName(destName);
+                downstreamPort->setOutputString(EMPTY_STRING);
             }
 
             // The processed node has been replaced, so remove it from the graph.
