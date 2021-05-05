@@ -21,6 +21,8 @@ using FilePathVec = vector<FilePath>;
 
 extern MX_FORMAT_API const string PATH_LIST_SEPARATOR;
 extern MX_FORMAT_API const string MATERIALX_SEARCH_PATH_ENV_VAR;
+extern MX_FORMAT_API const string MATERIALX_ASSET_DEFINITION_PATH_ENV_VAR;
+extern MX_FORMAT_API const string MATERIALX_ASSET_TEXTURE_PATH_ENV_VAR;
 
 /// @class FilePath
 /// A generic file path, supporting both syntactic and file system operations.
