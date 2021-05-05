@@ -36,7 +36,7 @@ const string VALID_SEPARATORS = "/\\";
 const char PREFERRED_SEPARATOR_WINDOWS = '\\';
 const char PREFERRED_SEPARATOR_POSIX = '/';
 
-FileSearchPath CORE_DEFINITION_PATH = "";
+FileSearchPath CORE_DEFINITION_PATH;
 
 #if defined(_WIN32)
 const string PATH_LIST_SEPARATOR = ";";
