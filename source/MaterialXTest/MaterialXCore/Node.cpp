@@ -208,12 +208,12 @@ TEST_CASE("Flatten", "[nodegraph]")
     }
     REQUIRE(totalNodeCount == 16);
 
-    // Read the example with upstream nodegraph
+    // Read the example with upstream nodegraphs
     doc = mx::createDocument();
     const mx::FilePathVec libraryFolders;
     mx::FileSearchPath libraryRoot(mx::FilePath::getCurrentPath() / mx::FilePath("libraries"));
     mx::loadLibraries(libraryFolders, libraryRoot, doc);
-    mx::readFromXmlFile(doc, "preflat.mtlx", searchPath);
+    mx::readFromXmlFile(doc, "Preflattened.mtlx", searchPath);
 
     doc->flattenSubgraphs(mx::EMPTY_STRING,
         [](mx::NodePtr node)
@@ -221,7 +221,7 @@ TEST_CASE("Flatten", "[nodegraph]")
         return (node->getCategory() != "standard_surface");
     });
 
-    mx::NodeGraphPtr upstreamGraph = doc->getNodeGraph("Prism_001_inputGraph");
+    mx::NodeGraphPtr upstreamGraph = doc->getNodeGraph("layered_inputGraph");
     if (upstreamGraph)
     {
         upstreamGraph->flattenSubgraphs();
