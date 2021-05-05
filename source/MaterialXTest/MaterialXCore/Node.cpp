@@ -12,8 +12,6 @@
 #include <MaterialXFormat/XmlIo.h>
 #include <MaterialXFormat/Util.h>
 
-#include <iostream>
-
 namespace mx = MaterialX;
 
 bool isTopologicalOrder(const std::vector<mx::ElementPtr>& elems)

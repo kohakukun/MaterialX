@@ -10,8 +10,6 @@
 
 #include <deque>
 
-#include <iostream>
-
 namespace MaterialX
 {
 
@@ -245,22 +243,10 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             }
             NodeGraphPtr subNodeGraph = implement->asA<NodeGraph>();
             graphImplMap[cacheNode] = subNodeGraph;
-            PortElementVec cdownstreamports = cacheNode->getDownstreamPorts();
-            downstreamPortMap[cacheNode] = cdownstreamports;
-            for (auto portElem : cdownstreamports)
-            {
-                std::cout << "Cache node [" + cacheNode->getNamePath() << "]. Add port: "
-                    << portElem->getNamePath() << std::endl;
-            }
+            downstreamPortMap[cacheNode] = cacheNode->getDownstreamPorts();
             for (NodePtr subNode : subNodeGraph->getNodes())
             {
-                PortElementVec downstreamports = subNode->getDownstreamPorts();
-                for (auto portElem2 : downstreamports)
-                {
-                    std::cout << "Cache submode node [" + subNode->getNamePath() << "]. Add port: "
-                        << portElem2->getNamePath() << std::endl;
-                }
-                downstreamPortMap[subNode] = downstreamports;
+                downstreamPortMap[subNode] = subNode->getDownstreamPorts();
             }
         }
         processNodeVec.clear();
@@ -280,7 +266,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             }
 
             NodeGraphPtr sourceSubGraph = pair.second;
-            std::cout << "--- Process nodegraph: " + sourceSubGraph->getNamePath() << std::endl;
             std::unordered_map<NodePtr, NodePtr> subNodeMap;
          
             for (NodePtr sourceSubNode : sourceSubGraph->getNodes())
@@ -289,7 +274,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                 string destName = createValidChildName(origName);
                 NodePtr destSubNode = addNode(sourceSubNode->getCategory(), destName);
 
-                std::cout << "Convert node : [" + origName + "] to " + destName << std::endl;
                 destSubNode->copyContentFrom(sourceSubNode);
                 setChildIndex(destSubNode->getName(), getChildIndex(processNode->getName()));
 
@@ -348,8 +332,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
             {
                 NodePtr sourceSubNode = subNodePair.first;
                 NodePtr destSubNode = subNodePair.second;
-                std::cout << "Map connections from : " << sourceSubNode->getNamePath() <<
-                    " to: " << destSubNode->getNamePath() << std::endl;
                 for (PortElementPtr sourcePort : downstreamPortMap[sourceSubNode])
                 {
                     if (sourcePort->isA<Input>())
@@ -357,9 +339,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                         auto it = subNodeMap.find(sourcePort->getParent()->asA<Node>());
                         if (it != subNodeMap.end())
                         {
-                            std::cout << "-- IN Connect " << it->second->getNamePath() << " port: \""
-                                << sourcePort->getName() << "\" to: \"" << destSubNode->getNamePath() << "\""
-                                << std::endl;
                             it->second->setConnectedNode(sourcePort->getName(), destSubNode);
                         }
                     }
@@ -367,9 +346,6 @@ void GraphElement::flattenSubgraphs(const string& target, NodePredicate filter)
                     {
                         for (PortElementPtr processNodePort : downstreamPortMap[processNode])
                         {
-                            std::cout << "-- OUT Connect \"" << processNodePort->getNamePath() << "\" port: "
-                                << sourcePort->getName() << " to: \"" << destSubNode->getNamePath() << "\""
-                                << std::endl;
                             processNodePort->setConnectedNode(destSubNode);
                         }
                     }
