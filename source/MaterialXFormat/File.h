@@ -346,10 +346,10 @@ MX_FORMAT_API FileSearchPath getEnvironmentPath(const string& sep = PATH_LIST_SE
 MX_FORMAT_API FileSearchPath getAssetDefinitionPath(const string& sep = PATH_LIST_SEPARATOR);
 MX_FORMAT_API FileSearchPath getAssetTexturePath(const string& sep = PATH_LIST_SEPARATOR);
 MX_FORMAT_API FileSearchPath getCoreDefinitionPath();
-MX_FORMAT_API void setEnvironmentPath(FileSearchPath& path);
-MX_FORMAT_API void setAssetDefinitionPath(FileSearchPath& path);
-MX_FORMAT_API void setAssetTexturePath(FileSearchPath& path);
-MX_FORMAT_API void setCoreDefinitionPath(FileSearchPath& path);
+MX_FORMAT_API void setEnvironmentPath(const FileSearchPath& path);
+MX_FORMAT_API void setAssetDefinitionPath(const FileSearchPath& path);
+MX_FORMAT_API void setAssetTexturePath(const FileSearchPath& path);
+MX_FORMAT_API void setCoreDefinitionPath(const FileSearchPath& path);
 
 } // namespace MaterialX
 

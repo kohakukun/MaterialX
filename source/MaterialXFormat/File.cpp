@@ -364,22 +364,22 @@ FileSearchPath getCoreDefinitionPath()
     return CORE_DEFINITION_PATH;
 }
 
-void setEnvironmentPath(FileSearchPath& path)
+void setEnvironmentPath(const FileSearchPath& path)
 {
     setEnviron(MATERIALX_SEARCH_PATH_ENV_VAR, path.asString());
 }
 
-void setAssetDefinitionPath(FileSearchPath& path)
+void setAssetDefinitionPath(const FileSearchPath& path)
 {
     setEnviron(MATERIALX_ASSET_DEFINITION_PATH_ENV_VAR, path.asString());
 }
 
-void setAssetTexturePath(FileSearchPath& path)
+void setAssetTexturePath(const FileSearchPath& path)
 {
     setEnviron(MATERIALX_ASSET_TEXTURE_PATH_ENV_VAR, path.asString());
 }
 
-void setCoreDefinitionPath(FileSearchPath& path)
+void setCoreDefinitionPath(const FileSearchPath& path)
 {
     CORE_DEFINITION_PATH = path;
 }
