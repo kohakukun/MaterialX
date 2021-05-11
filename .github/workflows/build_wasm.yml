@@ -11,8 +11,8 @@ on:
 
 jobs:
 
-  build_linux:
-    name: Build_Linux
+  build_wasm:
+    name: Build_WASM
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
