@@ -26,7 +26,7 @@ extern "C"
             .function("getElementDepth", &mx::TreeIterator::getElementDepth)
             .function("setPruneSubtree", &mx::TreeIterator::setPruneSubtree)
             .function("getPruneSubtree", &mx::TreeIterator::getPruneSubtree)
-            .function("__iter__", ems::optional_override([](mx::TreeIterator &it) -> mx::TreeIterator & {
+            .function("iter", ems::optional_override([](mx::TreeIterator &it) -> mx::TreeIterator & {
                 return it.begin(1);
             }))
             .function("next", ems::optional_override([](mx::TreeIterator &it) {
@@ -45,7 +45,7 @@ extern "C"
             .function("getNodeDepth", &mx::GraphIterator::getNodeDepth)
             .function("setPruneSubgraph", &mx::GraphIterator::setPruneSubgraph)
             .function("getPruneSubgraph", &mx::GraphIterator::getPruneSubgraph)
-            .function("__iter__", ems::optional_override([](mx::GraphIterator &it) -> mx::GraphIterator & {
+            .function("iter", ems::optional_override([](mx::GraphIterator &it) -> mx::GraphIterator & {
                 return it.begin(1);
             }))
             .function("next", ems::optional_override([](mx::GraphIterator &it) {
@@ -58,7 +58,7 @@ extern "C"
         ems::class_<mx::InheritanceIterator>("InheritanceIterator")
             .smart_ptr_constructor("InheritanceIterator", &std::make_shared<mx::InheritanceIterator, mx::ConstElementPtr>)
 
-            .function("__iter__", ems::optional_override([](mx::InheritanceIterator &it) -> mx::InheritanceIterator & {
+            .function("begin", ems::optional_override([](mx::InheritanceIterator &it) -> mx::InheritanceIterator & {
                 return it.begin(1);
             }))
             .function("next", ems::optional_override([](mx::InheritanceIterator &it) {
@@ -66,5 +66,13 @@ extern "C"
                     throw mx::Exception("Could not get the next element.");
                 return *it;
             }));
+
+
+        // TODO Wrap ExceptionFoundCycle?
+
+        ems::constant("NULL_EDGE", mx::NULL_EDGE);
+        ems::constant("NULL_TREE_ITERATOR", mx::NULL_TREE_ITERATOR);
+        ems::constant("NULL_GRAPH_ITERATOR", mx::NULL_GRAPH_ITERATOR);
+        ems::constant("NULL_INHERITANCE_ITERATOR", mx::NULL_INHERITANCE_ITERATOR);
     }
 }

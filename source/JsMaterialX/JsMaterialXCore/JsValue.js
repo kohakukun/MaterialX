@@ -1,21 +1,21 @@
 // jsValue
 addWrapper(function(Module, api) {
     var typedValues = [
-        'TypedValue_integer',
-        'TypedValue_boolean',
-        'TypedValue_float',
-        'TypedValue_color3',
-        'TypedValue_color4',
-        'TypedValue_vector2',
-        'TypedValue_vector3',
-        'TypedValue_vector4',
-        'TypedValue_matrix33',
-        'TypedValue_matrix44',
-        'TypedValue_string',
-        'TypedValue_integerarray',
-        'TypedValue_booleanarray',
-        'TypedValue_floatarray',
-        'TypedValue_stringarray'
+        'TypedValueInteger',
+        'TypedValueBoolean',
+        'TypedValueFloat',
+        'TypedValueColor3',
+        'TypedValueColor4',
+        'TypedValueVector2',
+        'TypedValueVector3',
+        'TypedValueVector4',
+        'TypedValueMatrix33',
+        'TypedValueMatrix44',
+        'TypedValueString',
+        'TypedValueIntegerArray',
+        'TypedValueBooleanArray',
+        'TypedValueFloatArray',
+        'TypedValueStringArray'
     ];
 
     function iterateTypedValues(cb) {

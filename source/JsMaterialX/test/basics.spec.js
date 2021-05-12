@@ -111,8 +111,8 @@ describe('Basics', () => {
 
     it('Matrices', () => {
         // Translation and scale
-        const trans = new mx.Matrix44().createTranslation(new mx.Vector3(1, 2, 3));
-        const scale = new mx.Matrix44().createScale(new mx.Vector3(2, 2, 2));
+        const trans = mx.Matrix44.createTranslation(new mx.Vector3(1, 2, 3));
+        const scale = mx.Matrix44.createScale(new mx.Vector3(2, 2, 2));
         expect(trans.equals(new mx.Matrix44(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1)));
         expect(scale.equals(new mx.Matrix44(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1)));
 
@@ -127,7 +127,7 @@ describe('Basics', () => {
         expect(scale.getTranspose().equals(scale)).to.be.true;
         expect(trans.getDeterminant()).to.equal(1);
         expect(scale.getDeterminant()).to.equal(8);
-        expect(trans.getInverse().equals(new mx.Matrix44().createTranslation(new mx.Vector3(-1, -2, -3)))).to.be.true;
+        expect(trans.getInverse().equals(mx.Matrix44.createTranslation(new mx.Vector3(-1, -2, -3)))).to.be.true;
 
         // Matrix product
         const prod1 = trans.multiply(scale);
@@ -152,19 +152,19 @@ describe('Basics', () => {
 
         // 2D rotation
         const _epsilon = 1e-4;
-        const rot1 = new mx.Matrix33().createRotation(Math.PI / 2);
-        const rot2 = new mx.Matrix33().createRotation(Math.PI);
+        const rot1 = mx.Matrix33.createRotation(Math.PI / 2);
+        const rot2 = mx.Matrix33.createRotation(Math.PI);
         expect(rot1.multiply(rot1).isEquivalent(rot2, _epsilon));
-        expect(rot2.isEquivalent(new mx.Matrix33().createScale(new mx.Vector2(-1, -1)), _epsilon));
+        expect(rot2.isEquivalent(mx.Matrix33.createScale(new mx.Vector2(-1, -1)), _epsilon));
         expect(rot2.multiply(rot2).isEquivalent(mx.Matrix33.IDENTITY, _epsilon));
 
         // 3D rotation
-        const rotX = new mx.Matrix44().createRotationX(Math.PI);
-        const rotY = new mx.Matrix44().createRotationY(Math.PI);
-        const rotZ = new mx.Matrix44().createRotationZ(Math.PI);
-        expect(rotX.multiply(rotY).isEquivalent(new mx.Matrix44().createScale(new mx.Vector3(-1, -1, 1)), _epsilon));
-        expect(rotX.multiply(rotZ).isEquivalent(new mx.Matrix44().createScale(new mx.Vector3(-1, 1, -1)), _epsilon));
-        expect(rotY.multiply(rotZ).isEquivalent(new mx.Matrix44().createScale(new mx.Vector3(1, -1, -1)), _epsilon));
+        const rotX = mx.Matrix44.createRotationX(Math.PI);
+        const rotY = mx.Matrix44.createRotationY(Math.PI);
+        const rotZ = mx.Matrix44.createRotationZ(Math.PI);
+        expect(rotX.multiply(rotY).isEquivalent(mx.Matrix44.createScale(new mx.Vector3(-1, -1, 1)), _epsilon));
+        expect(rotX.multiply(rotZ).isEquivalent(mx.Matrix44.createScale(new mx.Vector3(-1, 1, -1)), _epsilon));
+        expect(rotY.multiply(rotZ).isEquivalent(mx.Matrix44.createScale(new mx.Vector3(1, -1, -1)), _epsilon));
 
         // Matrix copy
         const trans2 = trans.copy();
