@@ -63,3 +63,9 @@ jobs:
         npm install
         npm run test
       working-directory: build
+
+    - name: Upload Installed Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: MaterialX_${{ matrix.name }}
+        path: build/installed/
