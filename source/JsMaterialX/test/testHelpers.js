@@ -22,10 +22,8 @@ export function initMaterialX() {
  * @param {function} elemCb - callback called on each element. The element is passed to the callback.
  */
 export function traverse(elements, elemCb) {
-    var elem = elements.next();
-    while (elem) {
+    for(const elem of elements) {
         elemCb && elemCb(elem);
-        elem = elements.next();
     }
 }
 

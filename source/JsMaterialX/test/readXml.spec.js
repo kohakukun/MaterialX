@@ -46,12 +46,10 @@ describe('Build Document', () => {
             // Traverse the document tree.
             let valueElementCount = 0;
             const treeIter = doc.traverseTree();
-            let elem = treeIter.next();
-            while (elem) {
+            for(const elem of treeIter) {
                 if (elem instanceof mx.ValueElement) {
                     valueElementCount++;
                 }
-                elem = treeIter.next();
             }
             expect(valueElementCount).to.be.greaterThan(0);
 

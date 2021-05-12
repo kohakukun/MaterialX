@@ -1,13 +1,4 @@
-#include "../helpers.h"
-#include <MaterialXCore/Node.h>
 #include <MaterialXCore/Util.h>
-
-#include <MaterialXFormat/File.h>
-#include <iostream>
-#include <vector>
-#include <iterator>
-#include <map>
-#include <tuple>
 
 #include <emscripten.h>
 #include <emscripten/bind.h>

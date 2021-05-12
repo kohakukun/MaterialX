@@ -34,6 +34,8 @@ extern "C"
             .function("setVariantString", &mx::VariantAssign::setVariantString)
             .function("hasVariantString", &mx::VariantAssign::hasVariantString)
             .function("getVariantString", &mx::VariantAssign::getVariantString)
-            .class_property("CATEGORY", &mx::VariantAssign::CATEGORY);
+            .class_property("CATEGORY", &mx::VariantAssign::CATEGORY)
+            .class_property("VARIANT_SET_ATTRIBUTE", &mx::VariantAssign::VARIANT_SET_ATTRIBUTE)
+            .class_property("VARIANT_ATTRIBUTE", &mx::VariantAssign::VARIANT_ATTRIBUTE);
     }
 }
