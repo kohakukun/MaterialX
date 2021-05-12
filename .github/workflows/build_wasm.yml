@@ -54,7 +54,7 @@ jobs:
       working-directory: build
 
     - name: CMake Build
-      run: cmake --build . --config Release --parallel 2
+      run: cmake --build . --target install --config Release --parallel 2
       working-directory: build
     
     - name: JS Tests
