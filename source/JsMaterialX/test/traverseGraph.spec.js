@@ -177,7 +177,7 @@ describe('Traverse Graph', () => {
                 return output.hasUpstreamCycle();
             })
         ).to.be.true;
-        expect(
+        expect(   
             isCycle(() => {
                 return doc.validate();
             })

@@ -10,7 +10,6 @@ std::vector<myClass> arrayToVec(myClass *arr, int size)
     return dest;
 }
 
-
 // Binding helpers
 
 #define UNPACK(...) __VA_ARGS__
@@ -346,5 +345,18 @@ API(JSNAME, ems::optional_override([](SELF) { \
 // 1 Macros for MAXARGS = 0
 #define BIND_0_0(...) \
 BIND_0(__VA_ARGS__)
+
+#define BIND_VALIDATE(CLASSNAME)                                                        \
+  .function("validate", ems::optional_override([](CLASSNAME &self) {                    \
+    return self.CLASSNAME::validate();                                                  \
+  }))                                                                                   \
+  .function("validate", ems::optional_override([](CLASSNAME &self, ems::val message) {  \
+      std::string nativeMessage;                                                        \
+      bool handleMessage = message.typeOf().as<std::string>() == "object";              \
+      bool res = self.CLASSNAME::validate(handleMessage ? &nativeMessage : nullptr);    \
+      if (!res && handleMessage)                                                        \
+        message.set("message", nativeMessage);                                          \
+      return res;                                                                       \
+  }))
 
 #endif // JSMATERIALX_HELPERS_H

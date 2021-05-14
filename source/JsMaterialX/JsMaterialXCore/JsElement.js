@@ -8,7 +8,6 @@ addWrapper(function (Module, api) {
         copyContentFrom: [REQUIRED],
         getUpstreamEdge: [0],
         getUpstreamElement: [0],
-        validate: [''],
         createStringResolver: [api.EMPTY_STRING],
         traverseGraph: [],
     });

@@ -95,10 +95,7 @@ extern "C"
             .function("hasSourceUri", &mx::Element::hasSourceUri)
             .function("getSourceUri", &mx::Element::getSourceUri)
             .function("getActiveSourceUri", &mx::Element::getActiveSourceUri)
-            .function("validate", ems::optional_override([](mx::Element &self, std::string message) {
-                          bool res = self.mx::Element::validate(&message);
-                          return res;
-                      }))
+            BIND_VALIDATE(mx::Element)  
             .function("copyContentFrom", ems::optional_override([](mx::Element &self, mx::ConstElementPtr source) {
                           const mx::ConstElementPtr &source1 = source;
                           return self.mx::Element::copyContentFrom(source1);
@@ -195,7 +192,8 @@ extern "C"
             BIND_VALUE_ELEMENT_FUNC_INSTANCE(integerarray, mx::IntVec)
             BIND_VALUE_ELEMENT_FUNC_INSTANCE(booleanarray, mx::BoolVec)
             BIND_VALUE_ELEMENT_FUNC_INSTANCE(floatarray, mx::FloatVec)
-            BIND_VALUE_ELEMENT_FUNC_INSTANCE(stringarray, mx::StringVec);
+            BIND_VALUE_ELEMENT_FUNC_INSTANCE(stringarray, mx::StringVec)
+            BIND_VALIDATE(mx::ValueElement);
 
         ems::class_<mx::Token, ems::base<mx::ValueElement>>("Token")
             .smart_ptr_constructor("Token", &std::make_shared<mx::Token, mx::ElementPtr, const std::string &>)

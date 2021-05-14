@@ -7,6 +7,8 @@
 namespace ems = emscripten;
 namespace mx = MaterialX;
 
+using stRef = const std::string&;
+
 extern "C"
 {
     EMSCRIPTEN_BINDINGS(node)
@@ -20,33 +22,33 @@ extern "C"
             .function("getConnectedNodeName", &mx::Node::getConnectedNodeName)
             .function("setConnectedOutput", &mx::Node::setConnectedOutput)
             .function("getConnectedOutput", &mx::Node::getConnectedOutput)
-            .function("getNodeDef", &mx::Node::getNodeDef)
-            .function("getImplementation", &mx::Node::getImplementation)
-            .function("getUpstreamEdge", &mx::Node::getUpstreamEdge)
+            BIND_FUNC("getNodeDef", mx::Node, getNodeDef, 0, 1, stRef)
+            BIND_FUNC("getImplementation", mx::Node, getImplementation, 0, 1, stRef)
+            BIND_FUNC("getUpstreamEdge", mx::Node, getUpstreamEdge, 0, 1, size_t)
             .function("getUpstreamEdgeCount", &mx::Node::getUpstreamEdgeCount)           
             .function("getNodeDefOutput", &mx::Node::getNodeDefOutput)
             .function("getDownstreamPorts", &mx::Node::getDownstreamPorts)
-            .function("getDeclaration", &mx::Node::getDeclaration)
+            BIND_FUNC("getDeclaration", mx::Node, getDeclaration, 0, 1, stRef)
             .function("addInputFromNodeDef", &mx::Node::addInputFromNodeDef)
-            .function("validate", &mx::Node::validate, ems::allow_raw_pointers())
+            BIND_VALIDATE(mx::Node)
             .class_property("CATEGORY", &mx::Node::CATEGORY);
-
+ 
         ems::class_<mx::GraphElement, ems::base<mx::InterfaceElement>>("GraphElement")
             .smart_ptr<std::shared_ptr<mx::GraphElement>>("GraphElement")
             .smart_ptr<std::shared_ptr<const mx::GraphElement>>("GraphElement")
-            .function("addNode", &mx::GraphElement::addNode)
-            .function("addNodeInstance", &mx::GraphElement::addNodeInstance)
+            BIND_FUNC("addNode", mx::GraphElement, addNode, 1, 3, stRef, stRef, stRef)
+            BIND_FUNC("addNodeInstance", mx::GraphElement, addNodeInstance, 1, 2, mx::ConstNodeDefPtr, stRef)
             .function("getNode", &mx::GraphElement::getNode)
-            .function("getNodes", &mx::GraphElement::getNodes)
+            BIND_FUNC("getNodes", mx::GraphElement, getNodes, 0, 1, stRef)
             .function("getNodesOfType", &mx::GraphElement::getNodesOfType)
             .function("removeNode", &mx::GraphElement::removeNode)
-            .function("addMaterialNode", &mx::GraphElement::addMaterialNode)
+            BIND_FUNC("addMaterialNode", mx::GraphElement, addMaterialNode, 0, 2, stRef, mx::ConstNodePtr)
             .function("getMaterialNodes", &mx::GraphElement::getMaterialNodes)
-            .function("addBackdrop", &mx::GraphElement::addBackdrop)
+            BIND_FUNC("addBackdrop", mx::GraphElement, addBackdrop, 0, 1, stRef)
             .function("getBackdrop", &mx::GraphElement::getBackdrop)
             .function("getBackdrops", &mx::GraphElement::getBackdrops)
             .function("removeBackdrop", &mx::GraphElement::removeBackdrop)
-            .function("flattenSubgraphs", &mx::GraphElement::flattenSubgraphs)
+            BIND_FUNC("flattenSubgraphs", mx::GraphElement, flattenSubgraphs, 0, 2, stRef, mx::NodePredicate)
             .function("topologicalSort", &mx::GraphElement::topologicalSort)
             .function("asStringDot", &mx::GraphElement::asStringDot);
 
@@ -56,11 +58,11 @@ extern "C"
             .function("setNodeDef", &mx::NodeGraph::setNodeDef)
             .function("getNodeDef", &mx::NodeGraph::getNodeDef)
             .function("getImplementation", &mx::NodeGraph::getImplementation)
-            .function("getDeclaration", &mx::NodeGraph::getDeclaration)
+            BIND_FUNC("getDeclaration", mx::NodeGraph, getDeclaration, 0, 1, stRef)
             .function("addInterfaceName", &mx::NodeGraph::addInterfaceName)
             .function("removeInterfaceName", &mx::NodeGraph::removeInterfaceName)
             .function("modifyInterfaceName", &mx::NodeGraph::modifyInterfaceName)
-            .function("validate", &mx::NodeGraph::validate, ems::allow_raw_pointers())
+            BIND_VALIDATE(mx::NodeGraph)
             .class_property("CATEGORY", &mx::NodeGraph::CATEGORY);
 
         ems::class_<mx::Backdrop, ems::base<mx::Element>>("Backdrop")
@@ -77,7 +79,7 @@ extern "C"
             .function("getHeight", &mx::Backdrop::getHeight)
             .function("setContainsElements", &mx::Backdrop::setContainsElements)
             .function("getContainsElements", &mx::Backdrop::getContainsElements)
-            .function("validate", &mx::Backdrop::validate, ems::allow_raw_pointers())
+            BIND_VALIDATE(mx::Backdrop)
             .class_property("CATEGORY", &mx::Backdrop::CATEGORY)
             .class_property("CONTAINS_ATTRIBUTE", &mx::Backdrop::CONTAINS_ATTRIBUTE)
             .class_property("WIDTH_ATTRIBUTE", &mx::Backdrop::WIDTH_ATTRIBUTE)

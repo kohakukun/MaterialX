@@ -26,7 +26,8 @@ extern "C"
             .function("setConnectedNode", &mx::PortElement::setConnectedNode)
             .function("getConnectedNode", &mx::PortElement::getConnectedNode)
             .function("hasOutputString", &mx::PortElement::hasOutputString)
-            .function("getOutputString", &mx::PortElement::getOutputString);
+            .function("getOutputString", &mx::PortElement::getOutputString)
+            BIND_VALIDATE(mx::PortElement);
 
         ems::class_<mx::Input, ems::base<mx::PortElement>>("Input")
             .smart_ptr_constructor("Input", &std::make_shared<mx::Input, mx::ElementPtr, const std::string &>)
@@ -36,12 +37,14 @@ extern "C"
             .function("getDefaultGeomPropString", &mx::Input::getDefaultGeomPropString)
             .function("getDefaultGeomProp", &mx::Input::getDefaultGeomProp)
             .function("getConnectedOutput", &mx::Input::getConnectedOutput)
+            BIND_VALIDATE(mx::Input)
             .class_property("CATEGORY", &mx::Input::CATEGORY);
 
         ems::class_<mx::Output, ems::base<mx::PortElement>>("Output")
             .smart_ptr_constructor("Output", &std::make_shared<mx::Output, mx::ElementPtr, const std::string &>)
             .smart_ptr<std::shared_ptr<const mx::Output>>("Output")
             .function("hasUpstreamCycle", &mx::Output::hasUpstreamCycle)
+            BIND_VALIDATE(mx::Output)
             .class_property("CATEGORY", &mx::Output::CATEGORY)
             .class_property("DEFAULT_INPUT_ATTRIBUTE", &mx::Output::DEFAULT_INPUT_ATTRIBUTE);
 

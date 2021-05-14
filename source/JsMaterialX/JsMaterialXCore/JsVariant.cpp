@@ -7,6 +7,8 @@
 namespace ems = emscripten;
 namespace mx = MaterialX;
 
+using stRef = const std::string&;
+
 extern "C"
 {
     EMSCRIPTEN_BINDINGS(variant)
@@ -19,7 +21,7 @@ extern "C"
         ems::class_<mx::VariantSet, ems::base<mx::Element>>("VariantSet")
             .smart_ptr_constructor("VariantSet", &std::make_shared<mx::VariantSet, mx::ElementPtr, const std::string &>)
             .smart_ptr<std::shared_ptr<const mx::VariantSet>>("VariantSet")
-            .function("addVariant", &mx::VariantSet::addVariant)
+            BIND_FUNC("addVariant", mx::VariantSet, addVariant, 0, 1, stRef)
             .function("getVariant", &mx::VariantSet::getVariant)
             .function("getVariants", &mx::VariantSet::getVariants)
             .function("removeVariant", &mx::VariantSet::removeVariant)

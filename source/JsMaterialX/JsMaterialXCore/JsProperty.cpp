@@ -8,7 +8,7 @@ namespace ems = emscripten;
 namespace mx = MaterialX;
 
 #define BIND_PROPERTYSET_TYPE_INSTANCE(NAME, T) \
-.function("setPropertyValue" #NAME, &mx::PropertySet::setPropertyValue<T>)
+    BIND_FUNC("setPropertyValue" #NAME, mx::PropertySet, setPropertyValue<T>, 2, 3, const std::string&, const T&, const std::string&)
 
 extern "C"
 {

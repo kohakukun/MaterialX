@@ -89,6 +89,7 @@ extern "C"
             .function("getColorManagementSystem", &mx::Document::getColorManagementSystem)
             .function("setColorManagementConfig", &mx::Document::setColorManagementConfig)
             .function("hasColorManagementConfig", &mx::Document::hasColorManagementConfig)
-            .function("getColorManagementConfig", &mx::Document::getColorManagementConfig);
+            .function("getColorManagementConfig", &mx::Document::getColorManagementConfig)
+            BIND_VALIDATE(mx::Document);
     }
 }
